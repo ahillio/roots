@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the ROOTS Commerce Entities feature.
+ */
+
+include_once 'roots_commerce_entities.features.inc';

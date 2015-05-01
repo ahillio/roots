@@ -1,0 +1,44 @@
+<?php
+/**
+ * @file
+ * Code for the ROOTS Redhen feature.
+ */
+
+include_once 'roots_redhen.features.inc';
+
+/*                                                                                                                                                             
+ * Make username = email address.  Requires email_registration module.
+ * ref http://www.wentsch.me/drupal-user-registration-and-login-email-instead-username
+ * Implements hook_email_registration_name(). 
+ */
+function roots_redhen_email_registration_name($edit,$account) {
+  return $account->mail;
+}
+
+/*
+ * Override email validation for certain kinds of redhen contacts
+ * Implements hook_field_attach_validate
+ */
+
+function roots_redhen_field_attach_validate($entity_type, $entity, &$errors) {
+
+/*
+        $msg = print_r($entity_type,1) . "\n\n" . print_r($entity, 1) . "\n\n". print_r($errors, 1);
+        mail('jk@webskillet.com','roots_redhen_field_attach_validate',$msg,"From: noreply@dev.reg-clone.webskillet.com/\r\n");
+*/
+
+        if ($entity_type == 'redhen_contact') {
+                $redhen_contact_type = $entity->type;
+                if ($redhen_contact_type == 'kid') {
+                        foreach($errors as $field => $error) {
+                                $remove_error = true;
+                                foreach($error['und'][0] as $index => $err) {
+                                        if ($err['message'] != t('At least one email is required.')) {
+                                                $remove_error = false;
+                                        }
+                                }
+                                if ($remove_error) { unset($errors[$field]); }
+                        }
+                }
+        }
+}

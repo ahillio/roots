@@ -1,0 +1,246 @@
+/* ROOTS CSS */
+
+a {color:#666632;font-style:italic;}
+a:hover {color:#976E22;font-style:normal;text-decoration:none;}
+h1#page-title {text-align:center;color:#261b11;}
+.page-taxonomy-term h2.pane-title, .view-where-to-start h2 { text-align:center;}
+h1#page-title {font-variant:small-caps;}
+.floatright {float:right; margin-left:5px;}
+.floatleft {float:left; margin-right:5px;}
+h3 {font-size:1.4em;}
+
+#header {
+/*background-image:url('images/banner.jpg');*/
+background-repeat: no-repeat;
+background-position:center;
+height:123px;
+}
+#header div.section {width:1060px;height:123px;}
+#logo {padding:0;}
+#site-name {text-indent:-9000px;}
+
+#featured {
+font-size:1.3em;
+text-shadow:none;
+background-color:#2E2115;
+color:#A4988B;
+padding:5px 0 10px;
+}
+.not-front #featured {height:45px;}
+.page-taxonomy-term-8 #featured {position:relative:top:-10px !important;padding-top:5px;}
+#featured li {display:inline;}
+#featured a {color:#B2B258;}
+#featured a.active {color:#666632;}
+#block-menu-menu-roots-info-for-adult-progra, #block-menu-menu-youth-about {
+width:500px;
+float:left;
+position:absolute;
+}
+#block-block-2, #block-block-1 {
+width:440px;
+float:right;
+}
+/* FOOTER */ /* note that there is another footer section lower down document */
+#footer-wrapper .section {
+background-image: url('/sites/www.rootsvt.com/themes/base/images/snail.jpg');
+background-repeat: no-repeat;
+background-position: 100% 85%;
+}
+
+#block-block-3 .content {position:relative:10:-10px;}
+#footer-wrapper {
+font-size:1em;
+padding:0;
+}
+#block-webform-client-block-39 {
+margin-top: 0;
+position: relative;
+top: -40px;
+}
+#footer-wrapper h2 {
+font-size:1.5em;
+margin-top:0;
+}
+/* HOMEPAGE */
+#block-block-8 {
+width:408px;
+float:left;
+text-align:justify;
+font-size.9em;
+line-height:1.1em;
+margin-top:10px;
+font-size:.9em;
+position:absolute;
+height:259px;
+background:url('/sites/www.rootsvt.com/themes/base/images/pinesilhouette.jpg') no-repeat;
+}
+#block-block-8 p {
+width:300px;
+margin:35px auto;
+}
+#block-block-10 {
+width:525px;
+float:right;
+}
+.front #featured li {
+display: list-item;
+list-style-type: none;
+text-align: left;
+}
+#youth-promo, #adults-promo {
+width:505px;
+background-color:#241a10;
+margin:10px;
+padding:10px;
+height:100px; /*needed only to make the background color for the youth-promo show up */
+font-size:.9em;
+}
+
+#youth-promo a, #adults-promo a {
+color:#A4988B;
+}
+#adults-promo {
+clear:both;
+}
+
+.view-adult-and-youth-slides {
+background-color:#646426;
+padding:14px;
+border:solid 3px #413e2e;
+margin:40px;
+}
+.view-adult-and-youth-slides h2, .view-adult-and-youth-slides a {
+text-align:center;
+font-size:1.3em;
+color:#eee;
+}
+.view-adult-and-youth-slides img {
+margin-left:27px;
+}
+#views_slideshow_controls_text_other_galleries-panel_pane_1 {text-align:center;}
+
+/* FOOTER */
+
+#footer-wrapper h2 {color:#c0c0c0;}
+#footer-wrapper {
+color:#c0c0c0;
+background: #241A10;
+border-top: solid 2px #2E2115;
+}
+#footer-columns .region {width:300px;}
+.audience-nav li {display:inline;}
+.eventimage {
+float:left;
+margin-right:20px;
+}
+#footer-wrapper .block {border:none;}
+#footer-columns h2 {border:none;}
+#edit-submitted-your-email, #edit-submitted-subject {width:270px;}
+#mc_embed_signup {background:none !important;}
+#mc_embed_signup label {display:none !important;}
+input.form-text, textarea.form-textarea, select.form-select {
+background-color:#A88C72;
+border: 1px solid #1F1913;
+}
+#mc_embed_signup input {
+border: 1px solid #1F1913;
+background-color:#A88C72;
+}
+
+
+/* EVENT TEMPLATE */
+.product h2 {
+text-align:center;
+}
+.event-dates {
+text-align:center;
+line-height:1.2em;
+}
+#add-to-cart-button label {display:none;}
+#price-info-wrapper {
+line-height:2em;
+}
+#register {
+border:solid 1px #A5842A;
+padding:0 20px;
+width:260px;
+margin:15px auto 10px;
+}
+#courseopen {
+color:green;
+}
+#courseclosed {
+color:red;
+}
+
+/* ABOUT PAGES */
+/* ABOUT SIDEBAR */
+.panels-flexible-region-12-side, .panels-flexible-region-10-side {
+position:fixed;
+right:-40px;
+}
+.panels-flexible-region-12-side h2 {
+text-align:left;
+text-indent:16px;
+}
+/* ABOUT MAIN CONTENT */
+.panels-flexible-region-12-center, .panels-flexible-region-10-center {
+padding-left:60px;
+}
+/* Adults Page */
+.quicktabs_main.quicktabs-style-navlist {
+color: #241A10;
+border: solid 1px;
+background-color: #F2EBDA;
+}
+ul.quicktabs-tabs.quicktabs-style-navlist li.active a {
+color: #241A10;
+}
+ul.quicktabs-tabs.quicktabs-style-navlist li.active {
+background: #F2EBDA;
+border-top: 1px solid #241A10;
+border-bottom: 1px solid #241A10;
+}
+a#offerings {
+font-style:normal;
+color:#241A10;
+}
+a#offerings:hover {
+color:#241A10;
+}
+/* Getting Started Page
+.page-node-217 #content .section {
+width:800px;
+margin:0 auto;
+}
+.page-node-217 .field-name-field-audience {
+display:none;
+} */
+
+/* Galleries */
+
+.lightbox-popup h2 {
+font-size:2.2em;
+margin-top:.2em;
+}
+
+#frameHoverNav {
+position: relative;
+top: -300px;
+width: 970px;
+}
+
+#imageDataContainer {
+height:20px;
+}
+#bottomNavClose {
+position: relative;
+top: -160px;
+}
+
+/* media browser */
+iframe .media-modal-frame {height:900px !important;}
+iframe #scrollbox {height:700px !important;}
+
+/* VIDEO GALLERY */
+.osmplayer-default-teaser-image {display:none;}

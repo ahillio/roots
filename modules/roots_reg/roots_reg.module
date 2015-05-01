@@ -1,0 +1,379 @@
+<?php
+/**
+ * @file
+ * Code for the roots_reg feature.
+ */
+
+include_once 'roots_reg.features.inc';
+/**
+ * @file roots_reg.module
+ * TODO: Enter file description here.
+ */
+
+
+/**
+ * Add pages to checkout process
+ * Implements hook_commerce_checkout_page_info().
+ */
+function roots_reg_commerce_checkout_page_info() {
+  $checkout_pages = array();
+
+  $checkout_pages['roots_reg_personal_info'] = array(
+    'name' => t('Personal Info'),
+    'title' => t('Personal Info'),
+    'help' => t('Fill in child and family info here'),
+    'weight' => -10,
+    'status_cart' => FALSE,
+    'buttons' => TRUE,
+    'weight' => -150
+    /**    'file' => 'cool_registrations_panes.inc',
+     *   'base' => 'cool_registrations_family_info',
+     */
+  );
+  $checkout_pages['roots_reg_children_info'] = array(
+    'name' => t('Child Information'),
+    'title' => t('Child Information'),
+    'help' => t('@todo add help text'),
+    'weight' => 0,
+    'status_cart' => FALSE,
+    'buttons' => TRUE,
+    'weight' => -125
+  );
+  $checkout_pages['roots_reg_sign_up'] = array(
+    'name' => t('Registrations'),
+    'title' => t('Registrations'),
+    'help' => t('@todo add help text'),
+    'weight' => 0,
+    'status_cart' => FALSE,
+    'buttons' => TRUE,
+    'weight' => -100
+  );
+  return $checkout_pages;
+}
+
+/**
+ * Implements hook_commerce_checkout_pane_info().
+ *
+ * Make these checkout panes available to place in the checkout pages
+ * docs don't say to put this in a function but they didn't say to put the above in a function either...
+ */
+function roots_reg_commerce_checkout_pane_info() {
+  $checkout_panes = array();
+
+  $checkout_panes['roots_reg_personal_pane'] = array(
+    'title' => t('Personal Info'),
+    'file' => 'roots_reg_panes.inc',
+    'page' => 'roots_reg_personal_info',
+  );
+  $checkout_panes['roots_reg_children_info_pane'] = array(
+    'title' => t('Child Information'),
+    'file' => 'roots_reg_panes.inc',
+    'page' => 'roots_reg_children_info',
+  );
+  $checkout_panes['roots_reg_signup_info_pane'] = array(
+    'title' => t('Registrations'),
+    'file' => 'roots_reg_sign_pane.inc',
+    'page' => 'roots_reg_sign_up',
+  );
+
+
+  return $checkout_panes;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function roots_reg_form_commerce_checkout_form_roots_reg_children_info_alter(&$form, &$form_state, $form_id) {
+  $query_param = drupal_get_query_parameters();
+  $order = $form_state['order'];
+  if ($contact_id = _root_reg_get_qs_contact_id() || !empty($query_param['child_contact_add'])) {
+
+    unset($form['buttons']);
+    $form['roots_reg_children_info_pane']['actions']['cancel'] = array(
+      '#type' => 'link',
+      '#title' => t('Cancel'),
+      '#href' => 'checkout/' . $order->order_id . '/roots_reg_children_info' ,
+    );
+  }
+  else {
+    $results = views_get_view_result('parents_child_relation', 'default', $order->order_id);
+    if (empty($results)) {
+
+      unset($form['buttons']['continue']);
+      unset($form['buttons']['back']['#prefix']);
+    }
+  }
+  //
+}
+/**
+ * Get Contact id from URL query string.
+ *
+ * @return int
+ */
+function _root_reg_get_qs_contact_id() {
+  $query_param = drupal_get_query_parameters();
+  if (isset($query_param['contact_id'])) {
+    return $query_param['contact_id'];
+  }
+  return NULL;
+}
+
+/**
+ * Custom submit handler for saving a contact in checkout
+ *
+ * @param $form
+ * @param $form_state
+ */
+function _roots_reg_children_info_pane_contact_submit($form, &$form_state) {
+  _roots_reg_contact_form_submit($form, $form_state);
+  $order = $form_state['values']['order'];
+  $form_state['redirect'] = 'checkout/' . $order->order_id . '/roots_reg_children_info';
+}
+
+/**
+ * Submit callback for adding child via Checkout to add relation to current user.
+ *
+ * @roots_reg_children_info_pane_checkout_form().
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @throws \Exception
+ */
+function _roots_reg_children_info_pane_add_relationship($form, &$form_state) {
+  global $user;
+  $user_redhen_contact = redhen_contact_load_by_user($user);
+  if ($user_redhen_contact) {
+    $child_contact = $form_state['redhen_contact'];
+    $endpoints = array(
+      array('entity_type' => 'redhen_contact', 'entity_id' => $child_contact->contact_id),
+      array('entity_type' => 'redhen_contact', 'entity_id' => $user_redhen_contact->contact_id),
+    );
+    $relation = relation_create('child_minor', $endpoints, $user);
+    $relation_wrapper = entity_metadata_wrapper('relation', $relation);
+
+    $relationship = $form_state['values']['relationship'];
+    $relation_wrapper->field_parentchild_relationship->set($relationship);
+    relation_save($relation, $user);
+
+  }
+  else {
+    _roots_reg_no_contact_error($user);
+  }
+}
+/**
+ * Handle calling Redhen form submit function.
+ *
+ * @param $form
+ * @param $form_state
+ */
+function _roots_reg_contact_form_submit($form, &$form_state) {
+  _root_reg_create_redhen_contact_form_state($form_state);
+  module_load_include('inc', 'redhen_contact', 'includes/redhen_contact.forms');
+  redhen_contact_contact_form_submit($form, $form_state);
+  unset($form_state['redirect']);
+}
+/**
+ * Update $form_state to values that the Redhen module is expecting.
+ *
+ * @param $form_state
+ *
+ * @return array
+ */
+function _root_reg_create_redhen_contact_form_state(&$form_state) {
+  $form_state['redhen_contact'] = $form_state['values']['redhen_contact'];
+  foreach ($form_state['values']['name'] as $name_part => $name_value) {
+    $form_state['values'][$name_part] = $name_value;
+    unset($form_state['values']['name'][$name_part]);
+  }
+  return;
+}
+/**
+ * Handle calling Redhen module form validation functions.
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @return bool
+ */
+function _roots_contact_form_validate($form, $form_state) {
+  _root_reg_create_redhen_contact_form_state($form_state);
+  module_load_include('inc', 'redhen_contact', 'includes/redhen_contact.forms');
+  redhen_contact_contact_form_validate($form, $form_state);
+  $errors = form_get_errors();
+  if ($errors) {
+    return FALSE;
+  }
+  return TRUE;
+}
+/**
+ * Throw an exception because current user doesn't have a redhen contact.
+ *
+ * This should never during the checking process because it should have been
+ * created by this point.
+ *
+ * @param $user
+ *
+ * @throws \Exception
+ */
+function _roots_reg_no_contact_error($user) {
+// @todo Better error messsage
+  watchdog('roots_reg', 'Current User doesn\'t have a redhen contact: @username', array('@username' => $user->name), WATCHDOG_CRITICAL);
+  throw new Exception('System Error.');
+}
+function _roots_reg_get_all_children_for_contact($contact ) {
+  // @TODO why does filtering on "active" return no relations
+  $relations = redhen_relation_relations($contact, 'child_minor');
+  $contacts = array();
+  foreach ($relations as $relation) {
+    $contacts[] = array_shift($relation);
+  }
+
+  return $contacts;
+}
+
+/**
+ * Implements hook_commerce_checkout_complete().
+ */
+function roots_reg_commerce_checkout_complete($order) {
+  _roots_reg_add_adult_registration($order);
+  $registration_wrappers = _root_reg_get_registrations_for_order($order->order_id);
+  foreach ($registration_wrappers as $node_wrapper) {
+    $node_wrapper->status->set(1);
+    $node_wrapper->save();
+  }
+
+
+}
+
+/**
+ * Create a registration for the current user's contact for all "adult" programs in order.
+ *
+ * @param $order
+ */
+function _roots_reg_add_adult_registration($order) {
+  global $user;
+  $redhen_contact = redhen_contact_load_by_user($user);
+  $line_items = _roots_reg_get_line_items_on_order($order, 'Adult');
+  // @todo Do we need to check here to make sure they don't have 2 or more registrations for the same adult program
+  foreach ($line_items as $line_item_wrapper) {
+    /* @var EntityDrupalWrapper $line_item_wrapper */
+    $product_id = $line_item_wrapper->commerce_product->getIdentifier();
+    _roots_reg_create_registration_node($product_id, $redhen_contact->contact_id, $line_item_wrapper->getIdentifier());
+  }
+}
+/**
+ * Retrieve program_registration nodes that reference this order_id
+ * @param $order_id
+ *
+ * @return EntityMetadataWrapper
+ */
+function _root_reg_get_registrations_for_order($order_id) {
+  $node_wrappers = array();
+  $query = new EntityFieldQuery();
+  $order_wrapper = entity_metadata_wrapper('commerce_order', $order_id);
+  $line_item_ids = $order_wrapper->commerce_line_items->raw();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'program_registration')
+    ->fieldCondition('field_line_item', 'target_id', $line_item_ids);
+  $results = $query->execute();
+  if ($results['node']) {
+    // Found nodes
+    foreach ($results['node'] as $node_info) {
+      $node_wrappers[] = entity_metadata_wrapper('node', $node_info->nid);
+    }
+  }
+  return $node_wrappers;
+}
+
+/**
+ * Get Line Items on order for an audience type.
+ *
+ * @param $order
+ * @param $audience_term_name
+ *
+ * @return array
+ *   Keys are line item ids
+ *   Values are Product label
+ */
+function _roots_reg_get_line_items_on_order($order, $audience_term_name) {
+  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+  $line_items = array();
+  /* @var EntityDrupalWrapper $commerce_line_item */
+  foreach ($order_wrapper->commerce_line_items as $commerce_line_item) {
+    $bundle =$commerce_line_item->getBundle();
+    if (in_array($bundle, array('regular_program', 'long_term_program'))) {
+      /* @var EntityDrupalWrapper $product_wrapper */
+      $product_wrapper = $commerce_line_item->commerce_product;
+      // Check to make sure this is Youth Product
+      $terms = taxonomy_get_term_by_name($audience_term_name, 'audience');
+      $term = array_pop($terms);
+      $product_tids = $product_wrapper->field_audience->raw();
+      $product_tid = array_pop($product_tids);
+      if ($product_tid == $term->tid) {
+        $line_items[$commerce_line_item->getIdentifier()] = $commerce_line_item;
+      }
+    }
+  }
+  return $line_items;
+}
+
+/**
+ * @param $product_id
+ * @param $contact_id
+ * @param $line_item_id
+ */
+function _roots_reg_create_registration_node($product_id, $contact_id, $line_item_id) {
+  global $user;
+  $node_values = array(
+    'type' => 'program_registration',
+    'uid' => $user->uid,
+    'status' => 0
+  );
+  $reg_node = entity_create('node', $node_values);
+  $reg_node_wrapper = entity_metadata_wrapper('node', $reg_node);
+  $reg_node_wrapper->field_program->set($product_id);
+  $reg_node_wrapper->field_registrant->set($contact_id);
+  $reg_node_wrapper->field_line_item->set($line_item_id);
+  $reg_node_wrapper->save();
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Form id = redhen_contact_contact_form
+ * Unrequire certain fields on Red Hen Contact.
+ * Allow admins to add contacts and not require all fields.
+ * *** Important ***
+ * During check the form id will not be redhen_contact_contact_form so this logic
+ * will not happen when showing Contact forms in checkout.
+ * This IS intentional in the checkout process all required forms should be required.
+ *
+ * @todo Might want to check for role to only unrequire for certain roles.
+ */
+function roots_reg_form_redhen_contact_contact_form_alter(&$form, &$form_state, $form_id) {
+  // @todo Add all fields to array that you want to unrequire.
+  $unrequire_fields = array(
+    'field_contact_1_name'
+  );
+  foreach ($unrequire_fields as $field_name) {
+    if (isset($form[$field_name])) {
+      _roots_reg_unrequire_form_element($form[$field_name]);
+    }
+  }
+}
+/**
+ * Make form element and all child elements unrequired
+ * @param array $form
+
+ * @param boolean $must_match
+ */
+function _roots_reg_unrequire_form_element(&$form_element) {
+  if (!empty($form_element['#required'])) {
+    $form_element['#required'] = FALSE;
+  }
+  $child_keys = element_children($form_element);
+  foreach ($child_keys as $key) {
+    _roots_reg_unrequire_form_element($form_element[$key]);
+  }
+}

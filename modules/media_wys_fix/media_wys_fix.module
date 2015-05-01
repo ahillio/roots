@@ -1,0 +1,13 @@
+<?php
+/**
+ * Implements media_token_to_markup_alter().
+ */
+function media_wys_fix_media_token_to_markup_alter(&$element, $tag_info, $settings) {
+  if (isset($element['#width']) && isset($element['#attributes']['width']) && $element['#width'] != $element['#attributes']['width']) {
+    $element['#width'] = $element['#attributes']['width'];
+  }
+  if (isset($element['#height']) && isset($element['#attributes']['height']) && $element['#height'] != $element['#attributes']['height']) {
+    $element['#height'] = $element['#attributes']['height'];
+  }
+}
+?>

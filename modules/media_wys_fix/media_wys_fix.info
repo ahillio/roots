@@ -1,0 +1,4 @@
+name = Media Wys Fix
+description = fixes the scale feature of images imbedded with media browser into wysiwyg field
+core = 7.x
+
