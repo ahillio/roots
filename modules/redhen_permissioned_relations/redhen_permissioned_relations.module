@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * @file
+ * Defines Redhen Permissioned Relations, creates modified access callback function
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function redhen_permissioned_relations_menu() {
+  $items = array();
+
+  $items['admin/config/redhen/permissioned-relations'] = array(
+    'title' => 'RedHen Permissioned Relations',
+    'description' => 'Settings for RedHen Permissioned Relations.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('redhen_permissioned_relations_config'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'redhen_permissioned_relations.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('administer redhen'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_info_alter
+ */
+function redhen_permissioned_relations_entity_info_alter(&$entity_info) {
+
+	$entity_info['redhen_contact']['access callback'] = 'redhen_permissioned_relations_access';
+
+	// additional options if redhen_org is enabled
+	if (module_exists('redhen_org')) {
+		$entity_info['redhen_org']['access callback'] = 'redhen_permissioned_relations_access';
+	}
+}
+
+/**
+ * Implements hook_menu_alter
+ */
+function redhen_permissioned_relations_menu_alter(&$items) {
+
+	$items['redhen/contact/%redhen_contact']['access callback'] = 'redhen_permissioned_relations_access';
+	$items['redhen/contact/%redhen_contact/view/edit']['access callback'] = 'redhen_permissioned_relations_access';
+
+	// additional options if redhen_org is enabled
+	if (module_exists('redhen_org')) {
+		$items['redhen/org/%redhen_org']['access callback'] = 'redhen_permissioned_relations_access';
+		$items['redhen/org/%redhen_org/view/edit']['access callback'] = 'redhen_permissioned_relations_access';
+	}
+
+}
+
+/**
+ * entity_access callback
+ */
+function redhen_permissioned_relations_access($op, $contact = NULL, $account = NULL) {
+	global $user;
+	global $rpr_count;
+	$account = isset($account) ? $account : $user;
+
+	// if redhen_org is enabled determine if contact is org or contact, and call appropriate access function
+	if (module_exists('redhen_org')) {
+		$access = isset($contact->org_id) ? redhen_org_access($op, $contact, $account) : redhen_contact_access($op, $contact, $account);
+	} else {
+		$access = redhen_contact_access($op, $contact, $account);
+	}
+
+	// development/debug
+	// if (module_exists('devel') && function_exists('dpm') && $account && $contact && !$rpr_count) { dpm($account); dpm($contact); $rpr_count = 1; }
+
+	if ($access) { return true; } // if user has global permissions, then they can access
+
+	if (isset($contact->uid) && ($contact->uid == $account->uid)) { return true; } // if user is linked to contact, then they can access
+
+	// if user is linked to any contact that has a relation with the contact (or org), then they can access 
+	$relations = redhen_relation_relations($contact);
+	if (is_array($relations)) {
+		foreach($relations as $relation) {
+			if (is_array($relation)) {
+				foreach ($relation as $r) {
+					if (isset($r->uid) && ($r->uid == $account->uid)) { return true; }
+				}
+			}
+		}
+	}
+	// if (module_exists('devel') && function_exists('dpm') && $relations && !$rpr_count) { dpm($relations); $rpr_count = 1; }
+}

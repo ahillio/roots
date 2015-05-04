@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Defines Redhen Permissioned Relations, creates modified access callback function
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function redhen_permissioned_relations_menu() {
+  $items = array();
+
+  $items['admin/config/redhen/permissioned-relations'] = array(
+    'title' => 'RedHen CRM',
+    'description' => 'Settings for RedHen Permissioned Relations.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('redhen_permissioned_relations_config'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'redhen_permissioned_relations.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('administer redhen'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_info_alter
+ */
+function redhen_permissioned_relations_entity_info_alter(&$entity_info) {
+
+}
+
+/**
+ * Implements hook_menu_alter
+ */
+function redhen_permissioned_relations_menu_alter(&$items) {
+
+}
+
+/**
+ * entity_access callback
+ */
+function redhen_permissioned_relations_access($op, $contact = NULL, $account = NULL) {
+	// determine if contact is org or contact
+	// $access = $org ? redhen_org_access($op, $contact, $account) : redhen_contact_access($op, $contact, $account);
+
+	// development/debug
+	dpm($contact);
+	return redhen_contact_access($op, $contact, $account);
+
+	if ($access) { return true; } // if user has global permissions, then they can access
+	// determine if user is linked to contact, or linked to a contact that has a relation with this contact or org
+}

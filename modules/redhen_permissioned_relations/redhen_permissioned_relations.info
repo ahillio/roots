@@ -1,0 +1,17 @@
+name = RedHen Permissioned Relations
+description = Allows users who are linked to a contact to edit their own contact record, and other contact records that have a relation with their contact record.
+package = RedHen
+core = 7.x
+version = 7.x-1.0-alpha1
+
+dependencies[] = redhen
+dependencies[] = redhen_contact
+
+configure = admin/config/redhen/permissioned-relations
+
+; Files
+files[] = redhen_permissioned_relations.admin.inc
+files[] = redhen_permissioned_relations.module
+
+
+
