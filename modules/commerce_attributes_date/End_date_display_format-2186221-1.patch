@@ -1,0 +1,13 @@
+diff --git a/includes/commerce_attributes_date.date.inc b/includes/commerce_attributes_date.date.inc
+index 2a3ad6c..bd569ea 100644
+--- a/includes/commerce_attributes_date.date.inc
++++ b/includes/commerce_attributes_date.date.inc
+@@ -74,7 +74,7 @@ function _commerce_attributes_date_date_field_allowed_values($field, $entity) {
+         $value_timestamp = $date->{$columns[0]};
+       }
+ 
+-      $has_value2 = (!empty($columns[1]) ? (' - ' . format_date($date->{$columns[1]}, $date_format)) : '');
++      $has_value2 = (!empty($columns[1]) ? (' - ' . format_date($date->{$columns[1]}, 'long')) : '');
+       $all_dates[$start_date] = format_date($value_timestamp, $date_format) . $has_value2;
+     }
+ 
