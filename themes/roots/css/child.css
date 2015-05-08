@@ -38,6 +38,8 @@ Table of contents:
  */
 
 #header-wrapper, #navigation-wrapper, #main-wrapper, #footer-wrapper { padding-top: 10px; padding-bottom: 10px; }
+.container { max-width: 980px; }
+.floatleft { float: left; }
 
 /**
  * 2. Typography
@@ -99,11 +101,35 @@ div.error, .error { color: #cc0000; }
 /**
  * 3. Header
  */
-
+#header-wrapper { background-color: #666632; padding: 0; }
+@media screen and (min-width:768px) { #header { background-image: url(../images/banner-tablet.jpg); background-repeat: no-repeat; }
+@media screen and (min-width:992px) { 
+	#header { background-image: url(../images/banner.jpg); }
+}
+a#logo { width: 123px; display: block; position: relative; left: 228px; }
+#site-name-slogan { height: 0; text-indent: -999em; }
 /**
  * 4. Navigation
  */
+#navigation-wrapper { background-color: #2E2115; color: #A4988B; }
+#block-block-10 {
+  width: 525px;
+  margin-left: 422px;
+  margin-top: -258px;
+}
+#youth-promo, #adults-promo { width: 505px; background-color: #241a10; margin: 10px; padding: 10px; height: 100px; font-size: .9em; }
+#block-block-8 {
+  width: 408px;
+  text-align: justify;
+  line-height: 1.1em;
+  margin-top: 10px;
+  font-size: .9em;
+  height: 259px;
+  background: url('/sites/www.rootsvt.com/themes/base/images/pinesilhouette.jpg') no-repeat;
+}
+ #block-block-8 p { width:300px; } 
 
+#youth-promo a, #adults-promo a { color: #A4988B; }
 #navigation li ul.main-menu li { line-height: 40px; }
 
 /* om-maximenu */
@@ -178,7 +204,7 @@ div.error, .error { color: #cc0000; }
 	   copy entire style.css from parent theme to child theme,
 	   add style.css in child theme .info file,
 	   and move the navigation section from the tablet query to the desktop query. */
-	#navigation-wrapper, #navigation { height: 40px; }
+	.not-front #navigation-wrapper, .not-front #navigation { height: 40px; }
 	#navigation ul { height: 40px; line-height: 40px; }
 	#navigation ul.main-menu li { margin: 5px 0; padding: 0; height: 30px; line-height: 30px; }
 	#navigation ul.main-menu li a { padding: 0 1em; }
