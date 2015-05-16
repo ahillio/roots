@@ -99,11 +99,11 @@ function roots_reg_children_info_pane_checkout_form($form, $form_state, $checkou
     // Get actual relationship field from Redhen Relation entity so that changes automatically update.
     $field_instance = field_info_instance('relation', 'field_parentchild_relationship', 'child_minor');
     $field = field_info_field('field_parentchild_relationship');
-     $form['relationship'] = array(
+    $form['relationship'] = array(
       '#type' => 'select',
       '#title' => $field_instance['label'],
-       '#options' => $field['settings']['allowed_values'],
-       '#weight' => -100,
+      '#options' => $field['settings']['allowed_values'],
+      '#weight' => -100,
     );
     $form['order'] = array(
       '#type' => 'value',
