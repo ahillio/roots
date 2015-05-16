@@ -39,7 +39,10 @@ Table of contents:
 
 #header-wrapper, #navigation-wrapper, #main-wrapper, #footer-wrapper { padding-top: 10px; padding-bottom: 10px; }
 .container { max-width: 980px; }
-.floatleft { float: left; }
+.floatleft { float: left; margin-right: 10px; }
+.floatright { float: right; margin-left: 10px; }
+/*#page { max-width: 653px; }
+#page-adults-courses #page, .front #page, .course-category-page #page { max-width: inherit; }*/
 
 /**
  * 2. Typography
@@ -112,7 +115,7 @@ a#logo { width: 123px; display: block; position: relative; left: 228px; }
  * 4. Navigation
  */
 #navigation-wrapper { background-color: #2E2115; color: #A4988B; }
-#block-block-10 {
+/* #block-block-10 {
   width: 525px;
   margin-left: 422px;
   margin-top: -258px;
@@ -129,13 +132,14 @@ a#logo { width: 123px; display: block; position: relative; left: 228px; }
 }
  #block-block-8 p { width:300px; } 
 
-#youth-promo a, #adults-promo a { color: #A4988B; }
+#youth-promo a, #adults-promo a { color: #A4988B; }*/
 #navigation li ul.main-menu li { line-height: 40px; }
 
 /* om-maximenu */
 .om-maximenu.om-maximenu-main-menu ul.om-menu li.om-leaf,
 .om-maximenu.om-maximenu-main-menu ul.om-menu li.om-leaf .om-link { min-height: 40px; }
 .om-maximenu-no-style .om-maximenu-middle-right { padding: 1em; }
+.om-maximenu-no-style .om-maximenu-middle { background-color: whitesmoke; }
 
 /**
  * 5. Highlighted
@@ -221,6 +225,11 @@ a#logo { width: 123px; display: block; position: relative; left: 228px; }
 	.om-maximenu ul.om-menu li.om-leaf .om-link { padding: 0 1em; }
 	.om-maximenu ul.om-menu li.om-leaf.first .om-link { padding-left: 0; }
 	.om-maximenu-no-style .om-maximenu-content { top: 40px; }
+	.om-maximenu .leaf-youth .om-maximenu-content, .om-maximenu .leaf-adults .om-maximenu-content { width: 560px; }
+	#navigation .om-maximenu-content .block { float: left; margin: 0 50px; }
+
+	/* fix bug of menu's not displaying -- from jk 13may2015, and may be fixed in based theme in future */ 
+	#navigation .om-maximenu li .block-menu ul.main-menu { top: auto; width: auto; margin: 0; padding: 0; background: transparent; left: auto; float: none; position: relative; }
 
 }
 
