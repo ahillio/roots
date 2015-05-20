@@ -347,11 +347,12 @@ function _roots_reg_create_registration_node($product_id, $contact_id, $line_ite
  * *** Important ***
  * During check the form id will not be redhen_contact_contact_form so this logic
  * will not happen when showing Contact forms in checkout.
- * This IS intentional in the checkout process all required forms should be required.
+ * This IS intentional in the checkout process all required fields should be required.
  *
  * @todo Might want to check for role to only unrequire for certain roles.
  */
 function roots_reg_form_redhen_contact_contact_form_alter(&$form, &$form_state, $form_id) {
+  dpm($form_id);
   // @todo Add all fields to array that you want to unrequire.
   $unrequire_fields = array(
     'field_contact_1_name'
@@ -359,6 +360,27 @@ function roots_reg_form_redhen_contact_contact_form_alter(&$form, &$form_state, 
   foreach ($unrequire_fields as $field_name) {
     if (isset($form[$field_name])) {
       _roots_reg_unrequire_form_element($form[$field_name]);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FOMR_ID_alter().
+ */
+function roots_reg_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+  $redhen_elements = &$form['redhen_contact']['form'];
+  _roots_reg_alter_redhen_reg_form($redhen_elements);
+}
+
+/**
+ * Hide all elements besides name on Redhen form when used in Registration.
+ * @param $elements
+ */
+function _roots_reg_alter_redhen_reg_form(&$elements) {
+  $all_elements = element_children($elements);
+  foreach($all_elements as $key) {
+    if ($key != 'name') {
+      $elements[$key]['#access'] = FALSE;
     }
   }
 }
