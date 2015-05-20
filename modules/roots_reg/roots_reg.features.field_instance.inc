@@ -184,7 +184,6 @@ function roots_reg_field_default_field_instances() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Line Item');
-  t('Order');
   t('Program');
   t('Program Registrations');
   t('Registrant');

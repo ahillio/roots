@@ -380,6 +380,8 @@ function _roots_reg_unrequire_form_element(&$form_element) {
 
 /**
  * Implements hook_entity_presave().
+ *
+ * Set dates to actual camp dates
  */
 function roots_reg_entity_presave($entity, $type) {
   if ($type == 'commerce_recurring') {
@@ -398,8 +400,6 @@ function roots_reg_commerce_checkout_router($order, $checkout_page) {
   $show_page = !_roots_reg_show_checkout_page($order, $checkout_page['page_id']);
 
   if (!_roots_reg_show_checkout_page($order, $checkout_page['page_id'])) {
-    dpm($order, 'order');
-    dpm($checkout_page,'page');
     // Should not display this page
     // @todo Check to see the user is going backwards or forwards in the form
     // look at commerce_checkout_form_back_submit, then maybe add another submit function to remember the backbutton was clicked
@@ -438,16 +438,20 @@ function _roots_reg_rule_condition_order_has_term($order,$term_name) {
 function roots_reg_block_view_alter(&$data, $block) {
   if ($block->module == 'commerce_checkout_progress' && $block->delta == 'indication') {
     global $user;
-    dpm($data['content']['#items']);
     $order = commerce_cart_order_load($user->uid);
-    // Make sure to get reference(&) not copy so items can be unset.
     $pages = &$data['content']['#items'];
-    foreach (array_keys($pages) as $page_id) {
-      if (!_roots_reg_show_checkout_page($order, $page_id)) {
-        unset($pages[$page_id]);
+    if ($order) {
+      // Make sure to get reference(&) not copy so items can be unset.
+
+      foreach (array_keys($pages) as $page_id) {
+        if (!_roots_reg_show_checkout_page($order, $page_id)) {
+          unset($pages[$page_id]);
+        }
       }
     }
-
+    else {
+      // If no order then remove all pages.
+      $pages = array();
+    }
   }
-
 }

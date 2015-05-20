@@ -30,7 +30,6 @@ function roots_reg_default_entityform_type() {
     "label" : "Registration Submitter",
     "data" : {
       "draftable" : 0,
-      "draft_redirect_path" : "",
       "draft_button_text" : "",
       "draft_save_text" : { "value" : "", "format" : "full_html" },
       "submit_button_text" : "",
@@ -46,14 +45,19 @@ function roots_reg_default_entityform_type() {
       "submissions_view" : "default",
       "user_submissions_view" : "default",
       "form_status" : "ENTITYFORM_OPEN",
-      "roles" : { "2" : "2", "3" : "3", "1" : 0 },
+      "roles" : { "2" : "2", "3" : "3", "1" : 0, "4" : 0 },
       "resubmit_action" : "new",
       "redirect_path" : "",
       "instruction_pre" : { "value" : "", "format" : "full_html" }
     },
     "weight" : "0",
     "rdf_mapping" : [],
-    "paths" : []
+    "paths" : { "submit" : {
+        "source" : "eform\\/submit\\/registration-submitter",
+        "alias" : "admin\\/registrations\\/create",
+        "language" : "und"
+      }
+    }
   }');
   return $items;
 }
@@ -64,7 +68,7 @@ function roots_reg_default_entityform_type() {
 function roots_reg_node_info() {
   $items = array(
     'program_registration' => array(
-      'name' => t('Program Registrion'),
+      'name' => t('Program Registration'),
       'base' => 'node_content',
       'description' => '',
       'has_title' => '1',

@@ -17,6 +17,14 @@ function roots_reg_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_line_item',
+    'foreign keys' => array(
+      'commerce_line_item' => array(
+        'columns' => array(
+          'target_id' => 'line_item_id',
+        ),
+        'table' => 'commerce_line_item',
+      ),
+    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -46,7 +54,6 @@ function roots_reg_field_default_field_bases() {
     'type' => 'entityreference',
   );
 
-
   // Exported field_base: 'field_program'
   $field_bases['field_program'] = array(
     'active' => 1,
@@ -54,6 +61,14 @@ function roots_reg_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_program',
+    'foreign keys' => array(
+      'commerce_product' => array(
+        'columns' => array(
+          'target_id' => 'product_id',
+        ),
+        'table' => 'commerce_product',
+      ),
+    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -89,6 +104,14 @@ function roots_reg_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_program_registrations',
+    'foreign keys' => array(
+      'node' => array(
+        'columns' => array(
+          'target_id' => 'nid',
+        ),
+        'table' => 'node',
+      ),
+    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -124,6 +147,14 @@ function roots_reg_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_registrant',
+    'foreign keys' => array(
+      'redhen_contact' => array(
+        'columns' => array(
+          'target_id' => 'contact_id',
+        ),
+        'table' => 'redhen_contact',
+      ),
+    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
