@@ -461,6 +461,12 @@ function roots_reg_block_view_alter(&$data, $block) {
   if ($block->module == 'commerce_checkout_progress' && $block->delta == 'indication') {
     global $user;
     $order = commerce_cart_order_load($user->uid);
+    if (!$order) {
+      // If already at checkout the will not return order. Grab from url;
+      $order_id = arg(1);
+      $order = commerce_order_load($order_id);
+    }
+
     $pages = &$data['content']['#items'];
     if ($order) {
       // Make sure to get reference(&) not copy so items can be unset.
@@ -470,10 +476,6 @@ function roots_reg_block_view_alter(&$data, $block) {
           unset($pages[$page_id]);
         }
       }
-    }
-    else {
-      // If no order then remove all pages.
-      $pages = array();
     }
   }
 }
