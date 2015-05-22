@@ -530,6 +530,9 @@ function roots_reg_form_commerce_checkout_form_alter(&$form, &$form_state, $form
     }
     array_unshift($submit_callbacks, '_roots_reg_checkout_back_submit');
     $form['buttons']['back']['#submit'] = $submit_callbacks;
+    // Remove validation if going backwards.
+    // @todo Check to see if removing validation on back causes any problems
+    $form['buttons']['back']['#limit_validation_errors'] = array();
   }
 }
 
