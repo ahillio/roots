@@ -352,7 +352,6 @@ function _roots_reg_create_registration_node($product_id, $contact_id, $line_ite
  * @todo Might want to check for role to only unrequire for certain roles.
  */
 function roots_reg_form_redhen_contact_contact_form_alter(&$form, &$form_state, $form_id) {
-  dpm($form_id);
   // @todo Add all fields to array that you want to unrequire.
   $unrequire_fields = array(
     'field_contact_1_name'
@@ -416,23 +415,58 @@ function roots_reg_entity_presave($entity, $type) {
 
 /**
  * Implements hook_commerce_checkout_router().
+ *
+ * Make sure the customer skips pages they shouldn't see based on what is in the order.
  */
 function roots_reg_commerce_checkout_router($order, $checkout_page) {
-
-  $show_page = !_roots_reg_show_checkout_page($order, $checkout_page['page_id']);
-
   if (!_roots_reg_show_checkout_page($order, $checkout_page['page_id'])) {
-    // Should not display this page
-    // @todo Check to see the user is going backwards or forwards in the form
-    // look at commerce_checkout_form_back_submit, then maybe add another submit function to remember the backbutton was clicked
-    $next_page = $checkout_page['next_page'];
-    $order = commerce_order_status_update($order, 'checkout_' . $next_page, FALSE, FALSE);
-    // Redirect to the URL for the new checkout page.
-    $target_uri = commerce_checkout_order_uri($order);
-    return drupal_goto($target_uri);
+    if ($force_page = _roots_reg_find_force_checkout_page($order, $checkout_page)) {
+      // Save direction as forward before order is saved in commerce_order_status_update
+      $order->data['roots_reg_direction'] = 'forwards';
+      $order = commerce_order_status_update($order, 'checkout_' . $force_page, FALSE, FALSE);
+      // Redirect to the URL for the new checkout page.
+      $target_uri = commerce_checkout_order_uri($order);
+      return drupal_goto($target_uri);
+    }
+  }
+}
+
+/**
+ * Find the page the customer should be forced to so that don't see pages they shouldn't
+ *
+ * @param $order
+ * @param $current_page
+ *
+ * @return page_id
+ */
+function _roots_reg_find_force_checkout_page($order, $current_page) {
+  $page_ids = array_keys(commerce_checkout_pages());
+  $force_page = NULL;
+  // If the current direction is backwards reverse the array to look through pages in the other direction.
+  if (isset($order->data['roots_reg_direction']) && $order->data['roots_reg_direction'] == 'backwards') {
+    $page_ids = array_reverse($page_ids);
   }
 
+  $current_position = array_search( $current_page['page_id'], $page_ids);
+  // Loop through and find the first page_id they should see.
+  while (isset($page_ids[++$current_position])) {
+    if (_roots_reg_show_checkout_page($order, $page_ids[$current_position])) {
+      $force_page = $page_ids[$current_position];
+      break;
+    }
+  }
+  return $force_page;
 }
+
+/**
+ * Determine if the customer for the current order should see a certain page.
+ *
+ * Currently looking only at adult and youth products.
+ * @param $order
+ * @param $page_id
+ *
+ * @return bool
+ */
 function _roots_reg_show_checkout_page($order, $page_id) {
   if ($page_id == 'roots_reg_personal_info') {
     if (!_roots_reg_rule_condition_order_has_term($order, 'Adult')) {
@@ -478,4 +512,36 @@ function roots_reg_block_view_alter(&$data, $block) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add our own submit function to the checkout back button.
+ *  This callback will store in the order that they are going backwards.
+ */
+function roots_reg_form_commerce_checkout_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['buttons']['back'])) {
+    if (!isset($form['buttons']['back']['#submit'])) {
+      $submit_callbacks = array();
+    }
+    else {
+      $submit_callbacks = $form['buttons']['back']['#submit'];
+    }
+    array_unshift($submit_callbacks, '_roots_reg_checkout_back_submit');
+    $form['buttons']['back']['#submit'] = $submit_callbacks;
+  }
+}
+
+/**
+ * Submit callback to save the direction the customer is going in the checkout process
+ *  when they hit the back button.
+ * @param $form
+ * @param $form_state
+ */
+function _roots_reg_checkout_back_submit($form, &$form_state) {
+ // $form_state['storage']['backwards'] = TRUE;
+  $order = $form_state['order'];
+  $order->data['roots_reg_direction'] = 'backwards';
+  commerce_order_save($order);
 }
