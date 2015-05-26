@@ -463,6 +463,7 @@ function _roots_reg_find_force_checkout_page($order, $current_page) {
  * @return mixed
  */
 function _roots_reg_next_checkout_page_to_show($order, $current_page_id, $page_ids) {
+  $force_page = NULL;
   $current_position = array_search($current_page_id, $page_ids);
   // Loop through and find the first page_id they should see.
   while (isset($page_ids[++$current_position])) {

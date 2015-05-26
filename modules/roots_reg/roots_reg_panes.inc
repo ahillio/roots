@@ -77,7 +77,8 @@ function roots_reg_children_info_pane_checkout_form($form, $form_state, $checkou
   if ($contact_id) {
     // Show contact edit
     $child_contact = redhen_contact_load($contact_id);
-    if (redhen_contact_access('update', $child_contact)) {
+    // Call custom access callback function to determine if this contact is editable.
+    if (redhen_permissioned_relations_access('update', $child_contact)) {
       _roots_reg_add_redhen_contact_form($child_contact, $form, $form_state);
       $form['order'] = array(
         '#type' => 'value',
