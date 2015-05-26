@@ -447,7 +447,23 @@ function _roots_reg_find_force_checkout_page($order, $current_page) {
     $page_ids = array_reverse($page_ids);
   }
 
-  $current_position = array_search( $current_page['page_id'], $page_ids);
+  $force_page = _roots_reg_next_checkout_page_to_show($order, $current_page['page_id'], $page_ids);
+  if (!$force_page && !_roots_reg_show_checkout_page($order, $current_page['page_id'])) {
+    $page_ids = array_reverse($page_ids);
+    $force_page = _roots_reg_next_checkout_page_to_show($order, $current_page['page_id'], $page_ids);
+  }
+  return $force_page;
+}
+
+/**
+ * @param $order
+ * @param $current_page
+ * @param $page_ids
+ *
+ * @return mixed
+ */
+function _roots_reg_next_checkout_page_to_show($order, $current_page_id, $page_ids) {
+  $current_position = array_search($current_page_id, $page_ids);
   // Loop through and find the first page_id they should see.
   while (isset($page_ids[++$current_position])) {
     if (_roots_reg_show_checkout_page($order, $page_ids[$current_position])) {
@@ -522,18 +538,48 @@ function roots_reg_block_view_alter(&$data, $block) {
  */
 function roots_reg_form_commerce_checkout_form_alter(&$form, &$form_state, $form_id) {
   if (isset($form['buttons']['back'])) {
-    if (!isset($form['buttons']['back']['#submit'])) {
-      $submit_callbacks = array();
+
+    if (!_roots_reg_show_back_button($form_state)) {
+      $form['buttons']['back']['#access'] = FALSE;
+      if (!isset($form['buttons']['cancel'])) {
+        $form['buttons']['cancel'] = array(
+          '#type' => 'submit',
+          '#value' => t('Cancel'),
+          '#attributes' => array('class' => array('checkout-cancel')),
+          '#submit' => array('commerce_checkout_form_cancel_submit'),
+          '#limit_validation_errors' => array(),
+          '#prefix' => 'or',
+        );
+      }
     }
     else {
-      $submit_callbacks = $form['buttons']['back']['#submit'];
+      if (!isset($form['buttons']['back']['#submit'])) {
+        $submit_callbacks = array();
+      }
+      else {
+        $submit_callbacks = $form['buttons']['back']['#submit'];
+      }
+      array_unshift($submit_callbacks, '_roots_reg_checkout_back_submit');
+      $form['buttons']['back']['#submit'] = $submit_callbacks;
+      // Remove validation if going backwards.
+      // @todo Check to see if removing validation on back causes any problems
+      $form['buttons']['back']['#limit_validation_errors'] = array();
     }
-    array_unshift($submit_callbacks, '_roots_reg_checkout_back_submit');
-    $form['buttons']['back']['#submit'] = $submit_callbacks;
-    // Remove validation if going backwards.
-    // @todo Check to see if removing validation on back causes any problems
-    $form['buttons']['back']['#limit_validation_errors'] = array();
+
   }
+}
+
+function _roots_reg_show_back_button($form_state) {
+  $order = $form_state['order'];
+  $checkout_page = $form_state['checkout_page'];
+  $pages = commerce_checkout_pages();
+  $page_ids = array_keys($pages);
+  $page_ids = array_reverse($page_ids);
+  if (!_roots_reg_next_checkout_page_to_show($order, $checkout_page['page_id'], $page_ids)) {
+    return FALSE;
+
+  }
+  return TRUE;
 }
 
 /**
