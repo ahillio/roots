@@ -548,7 +548,7 @@ function roots_reg_form_commerce_checkout_form_alter(&$form, &$form_state, $form
           '#type' => 'submit',
           '#value' => t('Cancel'),
           '#attributes' => array('class' => array('checkout-cancel')),
-          '#submit' => array('commerce_checkout_form_cancel_submit'),
+          '#submit' => array('commerce_checkout_form_cancel2_submit'),
           '#limit_validation_errors' => array(),
           '#prefix' => 'or',
         );
@@ -624,4 +624,31 @@ function roots_reg_entity_property_info_alter(&$info) {
   if (!empty($properties['field_program_date'])) {
     $info['commerce_product']['properties']['field_program_date'] = $properties['field_program_date'];
   }
+}
+
+
+
+
+/**
+ * Special submit handler for the cancel button to avoid processing orders.
+ */
+function commerce_checkout_form_cancel2_submit($form, &$form_state) {
+  $order = commerce_order_load($form_state['order']->order_id);
+
+  // Set the order status back to the first checkout page's status.
+  $order_state = commerce_order_state_load('cart');
+  $form_state['order'] = commerce_order_status_update($order, $order_state['default_status'], TRUE);
+
+  // Skip saving in the status update and manually save here to force a save
+  // even when the status doesn't actually change.
+  if (variable_get('commerce_order_auto_revision', TRUE)) {
+    $form_state['order']->revision = TRUE;
+    $form_state['order']->log = t('Customer manually canceled the checkout process.');
+  }
+
+  commerce_order_save($form_state['order']);
+
+  drupal_set_message(t('Checkout of your current order has been canceled and may be resumed when you are ready.'));
+
+  $form_state['redirect'] = 'cart';
 }
