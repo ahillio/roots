@@ -213,6 +213,7 @@ div.error, .error { color: #cc0000; }
   a.om-link:hover, span.om-link:hover, .open span.om-link { color: #A4988B; }
   .om-maximenu-content a { color: #A4988B; }
   .om-maximenu-content a:hover { color: #666632; }
+  .om-maximenu-content h3 { color: grey; }
 
 	.om-maximenu-no-style .om-maximenu-content { top: 40px; }
 	.om-maximenu .leaf-youth .om-maximenu-content, .om-maximenu .leaf-adults .om-maximenu-content { width: 560px; }
