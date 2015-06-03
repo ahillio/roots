@@ -649,8 +649,6 @@ function commerce_checkout_form_cancel2_submit($form, &$form_state) {
   commerce_order_save($form_state['order']);
 
   drupal_set_message(t('Checkout of your current order has been canceled and may be resumed when you are ready.'));
-  //drupal_set_message('<pre>' . check_plain(print_r($form_state, 1)) . '</pre><pre><strong>tibezh"s-debug:</strong></pre>');
-  //drupal_set_message('<pre>' . check_plain(print_r($order_state, 1)) . '</pre><pre><strong>tibezh"s-debug:</strong></pre>');
 
   $form_state['redirect'] = 'cart';
 }
