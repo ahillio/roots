@@ -167,6 +167,10 @@ div.error, .error { color: #cc0000; }
 /* 8.3 Utility */
 
 /* 8.4 Footer */
+#prefooter2-wrapper, #footer-wrapper{ background-color: #241A10; }
+#prefooter2 { color: #c0c0c0; background-image: url(../images/snail.jpg); background-repeat: no-repeat; background-position: 100% 85%; padding-top:30px; }
+#prefooter2 a { color:#c0c0c0; }
+#prefooter2 .block-webform header { display: none; }
 
 /**
  * 9. Media Queries
