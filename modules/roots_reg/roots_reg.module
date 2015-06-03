@@ -85,6 +85,7 @@ function roots_reg_commerce_checkout_pane_info() {
  */
 function roots_reg_form_commerce_checkout_form_roots_reg_children_info_alter(&$form, &$form_state, $form_id) {
   $query_param = drupal_get_query_parameters();
+
   $order = $form_state['order'];
   if ($contact_id = _root_reg_get_qs_contact_id() || !empty($query_param['child_contact_add'])) {
 
@@ -403,16 +404,15 @@ function _roots_reg_unrequire_form_element(&$form_element) {
  * Implements hook_entity_presave().
  *
  * Set dates to actual camp dates
- *
- *function roots_reg_entity_presave($entity, $type) {
- *  if ($type == 'commerce_recurring') {
- *    $recurring_wrapper  = entity_metadata_wrapper('commerce_recurring', $entity);
- *    $camp_date = intval($recurring_wrapper->commerce_recurring_ref_product->field_program_date->value->value());
- *    $recurring_wrapper->due_date->set($camp_date);
- *    $recurring_wrapper->end_date->set($camp_date);
- *  }
- *}
  */
+function roots_reg_entity_presave($entity, $type) {
+  if ($type == 'commerce_recurring') {
+    $recurring_wrapper  = entity_metadata_wrapper('commerce_recurring', $entity);
+    $camp_date = intval($recurring_wrapper->commerce_recurring_ref_product->field_program_date->value->value());
+    $recurring_wrapper->due_date->set($camp_date);
+    $recurring_wrapper->end_date->set($camp_date);
+  }
+}
 
 /**
  * Implements hook_commerce_checkout_router().
@@ -548,7 +548,7 @@ function roots_reg_form_commerce_checkout_form_alter(&$form, &$form_state, $form
           '#type' => 'submit',
           '#value' => t('Cancel'),
           '#attributes' => array('class' => array('checkout-cancel')),
-          '#submit' => array('commerce_checkout_form_cancel_submit'),
+          '#submit' => array('commerce_checkout_form_cancel2_submit'),
           '#limit_validation_errors' => array(),
           '#prefix' => 'or',
         );
@@ -597,31 +597,29 @@ function _roots_reg_checkout_back_submit($form, &$form_state) {
   commerce_order_save($order);
 }
 
+
 /**
- * Implements hook_entity_property_info_alter().
+ * Special submit handler for the cancel button to avoid processing orders.
  */
-function roots_reg_entity_property_info_alter(&$info) {
-  // Move the price properties to the line item by default; as they are required
-  // default fields, this makes dealing with them more convenient.
-  $properties = array();
+function commerce_checkout_form_cancel2_submit($form, &$form_state) {
+  $order = commerce_order_load($form_state['order']->order_id);
 
-  foreach ($info['commerce_line_item']['bundles'] as $bundle => $bundle_info) {
-    $bundle_info += array('properties' => array());
-    $properties += $bundle_info['properties'];
+  // Set the order status back to the first checkout page's status.
+  $order_state = commerce_order_state_load('cart');
+  $form_state['order'] = commerce_order_status_update($order, $order_state['default_status'], TRUE);
+
+  // Skip saving in the status update and manually save here to force a save
+  // even when the status doesn't actually change.
+  if (variable_get('commerce_order_auto_revision', TRUE)) {
+    $form_state['order']->revision = TRUE;
+    $form_state['order']->log = t('Customer manually canceled the checkout process.');
   }
 
-  if (!empty($properties['commerce_product'])) {
-    $info['commerce_line_item']['properties']['commerce_product'] = $properties['commerce_product'];
-  }
+  commerce_order_save($form_state['order']);
 
-  $properties = array();
+  drupal_set_message(t('Checkout of your current order has been canceled and may be resumed when you are ready.'));
+  //drupal_set_message('<pre>' . check_plain(print_r($form_state, 1)) . '</pre><pre><strong>tibezh"s-debug:</strong></pre>');
+  //drupal_set_message('<pre>' . check_plain(print_r($order_state, 1)) . '</pre><pre><strong>tibezh"s-debug:</strong></pre>');
 
-  foreach ($info['commerce_product']['bundles'] as $bundle => $bundle_info) {
-    $bundle_info += array('properties' => array());
-    $properties += $bundle_info['properties'];
-  }
-
-  if (!empty($properties['field_program_date'])) {
-    $info['commerce_product']['properties']['field_program_date'] = $properties['field_program_date'];
-  }
+  $form_state['redirect'] = 'cart';
 }

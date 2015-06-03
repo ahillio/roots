@@ -1,15 +1,6 @@
 <?php
 /**
- * Implements hook_rules_condition_info()
- * *** Important ***
- * Currently these conditions are NOT used because using "Process a change to the checkout page"
- *  causes order status to be wrong and messes up checkout process
- * 
- * Rules that use the conditions that check for an audience term must also
- *  check to see if the Order->order_id is NOT empty.
- *  The event "Process a change to the checkout page" gets call before
- *  the order is actually created.
- *
+ * Implements hook_rules_condition_info().
  */
 function roots_reg_rules_condition_info() {
   return array(

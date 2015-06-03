@@ -39,5 +39,53 @@ function roots_reg_default_rules_configuration() {
       ]
     }
   }');
+  $items['rules_disable_child_info_pane'] = entity_import('rules_config', '{ "rules_disable_child_info_pane" : {
+      "LABEL" : "disable child info pane",
+      "PLUGIN" : "reaction rule",
+      "OWNER" : "rules",
+      "TAGS" : [ "Commerce Checkout", "registration" ],
+      "REQUIRES" : [ "rules", "roots_reg", "commerce_rules_extra" ],
+      "ON" : { "commerce_rules_extra_process_checkout_page" : [] },
+      "IF" : [
+        { "NOT data_is_empty" : { "data" : [ "site:current-cart-order:order-id" ] } },
+        { "NOT root_reg_rule_condition_order_has_term_youth" : { "order" : [ "site:current-cart-order" ] } }
+      ],
+      "DO" : [
+        { "commerce_rules_extra_change_pane" : {
+            "pane_id" : "roots_reg_children_info_pane",
+            "page_id" : "\\u003Csame\\u003E",
+            "enabled" : 0
+          }
+        },
+        { "commerce_rules_extra_change_pane" : {
+            "pane_id" : "roots_reg_signup_info_pane",
+            "page_id" : "\\u003Csame\\u003E",
+            "enabled" : 0
+          }
+        }
+      ]
+    }
+  }');
+  $items['rules_disable_personal_info_pane'] = entity_import('rules_config', '{ "rules_disable_personal_info_pane" : {
+      "LABEL" : "disable personal info pane",
+      "PLUGIN" : "reaction rule",
+      "OWNER" : "rules",
+      "TAGS" : [ "Commerce Checkout", "registration" ],
+      "REQUIRES" : [ "rules", "roots_reg", "commerce_rules_extra" ],
+      "ON" : { "commerce_rules_extra_process_checkout_page" : [] },
+      "IF" : [
+        { "NOT data_is_empty" : { "data" : [ "site:current-cart-order:order-id" ] } },
+        { "NOT root_reg_rule_condition_order_has_term_adult" : { "order" : [ "site:current-cart-order" ] } }
+      ],
+      "DO" : [
+        { "commerce_rules_extra_change_pane" : {
+            "pane_id" : "roots_reg_personal_pane",
+            "page_id" : "\\u003Csame\\u003E",
+            "enabled" : 0
+          }
+        }
+      ]
+    }
+  }');
   return $items;
 }
