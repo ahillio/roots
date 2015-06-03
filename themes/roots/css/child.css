@@ -194,6 +194,7 @@ div.error, .error { color: #cc0000; }
   /*.not-front #navigation-wrapper, .not-front #navigation { height: 40px; }*/
 	#navigation ul { height: 40px; line-height: 40px; }
 	#navigation ul.main-menu li { margin: 5px 0; padding: 0; height: 30px; line-height: 30px; }
+  #navigation li ul.main-menu li { line-height: 25px; }
 	#navigation ul.main-menu li a { padding: 0 1em; }
 	#navigation ul.main-menu li.first a { padding-left: 1em; }
 	#navigation ul.main-menu li.first { border-left: 0; }
@@ -209,7 +210,9 @@ div.error, .error { color: #cc0000; }
 	.om-maximenu ul.om-menu li.om-leaf .om-link { padding: 0 1em; }
 	.om-maximenu ul.om-menu li.om-leaf.first .om-link { padding-left: 1em; }
   a.om-link, a.om-link.active, span.om-link { color: #B2B258; font-size: 1.1em; }
-  a.om-link:hover, span.om-link:hover { color: #A4988B; }
+  a.om-link:hover, span.om-link:hover, .open span.om-link { color: #A4988B; }
+  .om-maximenu-content a { color: #A4988B; }
+  .om-maximenu-content a:hover { color: #666632; }
 
 	.om-maximenu-no-style .om-maximenu-content { top: 40px; }
 	.om-maximenu .leaf-youth .om-maximenu-content, .om-maximenu .leaf-adults .om-maximenu-content { width: 560px; }
