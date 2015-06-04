@@ -38,6 +38,7 @@ Table of contents:
  */
 
 #header-wrapper, #navigation-wrapper, #main-wrapper, #footer-wrapper { padding-top: 10px; padding-bottom: 10px; }
+#main-wrapper { padding-top: 0; }
 .container { max-width: 980px; }
 .floatleft { float: left; margin-right: 10px; }
 .floatright { float: right; margin-left: 10px; }
@@ -105,7 +106,8 @@ div.error, .error { color: #cc0000; }
  * 3. Header
  */
 #header-wrapper { background-color: #666632; padding: 0; }
-@media screen and (min-width:768px) { #header { background-image: url(../images/760-banner.jpg); background-repeat: no-repeat; } a#logo { position: relative; left: 122px; } }
+a#logo { width: 123px; }
+@media screen and (min-width:768px) { #header { background-image: url(../images/760-banner.jpg); background-repeat: no-repeat; } a#logo { position: relative; left: 122px; display: block; } }
 @media screen and (min-width:992px) {
 	#header { background-image: url(../images/980-banner.jpg); }
   a#logo { width: 123px; display: block; position: relative; left: 224px; }
@@ -167,6 +169,12 @@ div.error, .error { color: #cc0000; }
 /* 8.3 Utility */
 
 /* 8.4 Footer */
+#prefooter2-wrapper, #footer-wrapper{ background-color: #241A10; }
+#prefooter2 { color: #c0c0c0; background-image: url(../images/snail.jpg); background-repeat: no-repeat; background-position: 100% 85%; padding-top:30px; }
+#prefooter2 a { color:#c0c0c0; }
+#prefooter2 a:hover { color: #DFDFDF; }
+#prefooter2 .block-webform header { display: none; }
+#prefooter2 input, #prefooter2 select, #prefooter2 textarea { background-color: rgba(255, 255, 255, 0.4); }
 
 /**
  * 9. Media Queries
