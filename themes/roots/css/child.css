@@ -211,13 +211,22 @@ div.error, .error { color: #cc0000; }
 	.om-maximenu ul.om-menu li.om-leaf.first .om-link { padding-left: 1em; }
   a.om-link, a.om-link.active, span.om-link { color: #B2B258; font-size: 1.1em; }
   a.om-link:hover, span.om-link:hover, .open span.om-link { color: #A4988B; }
+  
+  .om-maximenu-no-style .leaf-adults .om-maximenu-content { left: -218px; }
   .om-maximenu-content a { color: #A4988B; }
   .om-maximenu-content a:hover { color: #666632; }
   .om-maximenu-content h3 { color: grey; }
 
+  .om-maximenu-no-style .om-maximenu-middle-right { padding: 0; }
+  #navigation .om-maximenu-content .block { float: left; margin: 0; }
+  .om-maximenu-content h3.title { background-color: rgb(30, 22, 14); }
+  .om-maximenu-content h3.title { padding: 0 60px; margin: 0; }
+  .om-maximenu-content .block:nth-child(2) h3.title { padding-right: 72px; }
+  .om-maximenu-content .block .content { padding: 5px 60px 10px; }
+  
+
 	.om-maximenu-no-style .om-maximenu-content { top: 40px; }
 	.om-maximenu .leaf-youth .om-maximenu-content, .om-maximenu .leaf-adults .om-maximenu-content { width: 560px; }
-	#navigation .om-maximenu-content .block { float: left; margin: 0 50px; }
 
 	/* fix bug of menu's not displaying -- from jk 13may2015, and may be fixed in based theme in future */ 
 	#navigation .om-maximenu li .block-menu ul.main-menu { top: auto; width: auto; margin: 0; padding: 0; background: transparent; left: auto; float: none; position: relative; }
