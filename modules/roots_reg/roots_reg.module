@@ -624,6 +624,11 @@ function roots_reg_entity_property_info_alter(&$info) {
   if (!empty($properties['field_program_date'])) {
     $info['commerce_product']['properties']['field_program_date'] = $properties['field_program_date'];
   }
+
+  if (!empty($properties['commerce_recurring_rec_price'])) {
+    $info['commerce_product']['properties']['commerce_recurring_rec_price'] = $properties['commerce_recurring_rec_price'];
+  }
+
 }
 
 
