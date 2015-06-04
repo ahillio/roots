@@ -219,8 +219,12 @@ a#logo { width: 123px; }
 	.om-maximenu ul.om-menu li.om-leaf.first .om-link { padding-left: 1em; }
   a.om-link, a.om-link.active, span.om-link { color: #B2B258; font-size: 1.1em; }
   a.om-link:hover, span.om-link:hover, .open span.om-link { color: #A4988B; }
-  
+
+  .om-maximenu-no-style .leaf-youth .om-maximenu-content { left: -64px; }
+  .om-maximenu-no-style .leaf-teens .om-maximenu-content { left: -86px; }
   .om-maximenu-no-style .leaf-adults .om-maximenu-content { left: -218px; }
+  .om-maximenu-no-style .leaf-educators .om-maximenu-content { left: -60px; }
+  .om-maximenu-no-style .leaf-about .om-maximenu-content { left: -83; }
   .om-maximenu-content a { color: #A4988B; }
   .om-maximenu-content a:hover { color: #666632; }
   .om-maximenu-content h3 { color: grey; }
@@ -230,6 +234,7 @@ a#logo { width: 123px; }
   .om-maximenu-content h3.title { background-color: rgb(30, 22, 14); }
   .om-maximenu-content h3.title { padding: 0 60px; margin: 0; }
   .om-maximenu-content .block:nth-child(2) h3.title { padding-right: 72px; }
+  .leaf-youth .om-maximenu-content .block:nth-child(2) h3.title { padding-right: 154px; }
   .om-maximenu-content .block .content { padding: 5px 60px 10px; }
   
 
