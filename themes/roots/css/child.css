@@ -263,3 +263,23 @@ a#logo { width: 123px; }
  */
 
 
+
+
+/**
+ * CHEKCOUT PAGES
+ */
+
+.page-checkout #navigation-wrapper { height: 40px; }
+.page-checkout h1#page-title { text-align: center; }
+.page-checkout #navigation { display: none; }
+#block-commerce-checkout-progress-indication { position: relative; top: -80px; color: #B2B258; background-color: #B2B258; height: 33px; padding-top: 3px; }
+#block-commerce-checkout-progress-indication li { background-color: #2E2115; position: relative; margin: 0 10px; list-style-type: none; padding-left: 5px; }
+#block-commerce-checkout-progress-indication li:before { content: ""; position: absolute; left: -13px; bottom: 0px; width: 0; height: 0; border-left: 13px solid transparent; border-top: 12px solid #2E2115; border-bottom: 12px solid #2E2115; }
+#block-commerce-checkout-progress-indication li:after { content: ""; position: absolute; right: -13px; width: 0; height: 0; border-left: 13px solid #2E2115; border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+li.cart.visited.first { width: 60px; }
+li.cart.visited.first:before { border: none; }
+li.roots_reg_children_info.visited { max-width: 130px; }
+li.roots_reg_sign_up.visited { max-width: 100px; }
+li.checkout.visited { max-width: 77px; }
+li.review.visited { max-width: 99px; }
+li.active.complete.last { width: 160px; }
