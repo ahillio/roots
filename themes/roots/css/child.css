@@ -53,6 +53,7 @@ Table of contents:
 body { color: #333; font: 93.75%/1.6em Georgia, serif; }
 
 /* 2.2 Headers */
+h1#page-title { text-align: center; margin-top: 10px; }
 h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0 0 1em; font-family: Georgia, serif; }
 h1 { font-size: 1.5em; }
 h2 { font-size: 1.333em; }
@@ -66,14 +67,16 @@ h5, h6 { font-size: 0.8em; font-weight: bold; margin-bottom: 0; }
 
 /* 2.5 Links */
 a { text-decoration: none; }
-a:link { color: #44889f; }
-a:visited { color: #44889f; }
-.no-touch a:hover { color: #a62a32; }
-a:active { color: #44889f; }
+a:link { color: #666632; }
+a:visited { color: #666632; }
+.no-touch a:hover { color: #4D4D24; }
+a:active { color: #666632; }
 
 /* 2.6 Images */
 
 /* 2.7 Tables */
+tr.even, tr.odd { background-color: #F6F4F4; }
+.calendar-calendar .month-view .full td.multi-day div.monthview, .calendar-calendar .week-view .full td.multi-day div.weekview, .calendar-calendar .day-view .full td.multi-day div.dayview, .calendar-calendar .month-view .full td.multi-day .inner .monthview .continues, .calendar-calendar .month-view .full td.multi-day .inner .monthview .cutoff { background: #F6F4F4; }
 
 /* 2.8 Forms */
 .form-item .description, .filter-guidelines { color: #999; }
@@ -263,6 +266,23 @@ a#logo { width: 123px; }
  */
 
 
+/**
+ * Homepage
+ */
+@media screen and (min-width: 768px) { .front section#page { height: 448px; } }
+@media screen and (min-width: 992px) { .front section#page { height: 583px; } }
+.flex-control-nav {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.33);
+  padding: 8px 0 1px;
+}
+.flex-caption { display: none; }
+.flexslider a { color: #333; }
+.flexslider a:hover { color: black; }
 
 
 /**
@@ -270,16 +290,22 @@ a#logo { width: 123px; }
  */
 
 .page-checkout #navigation-wrapper { height: 40px; }
-.page-checkout h1#page-title { text-align: center; }
 .page-checkout #navigation { display: none; }
-#block-commerce-checkout-progress-indication { position: relative; top: -80px; color: #B2B258; background-color: #B2B258; height: 33px; padding-top: 3px; }
-#block-commerce-checkout-progress-indication li { background-color: #2E2115; position: relative; margin: 0 10px; list-style-type: none; padding-left: 5px; }
+#block-commerce-checkout-progress-indication ol { margin: 0; }
+#block-commerce-checkout-progress-indication { position: relative; top: -90px; color: #858557/*B2B258*/; background-color: #44481B; height: 27px; padding-top: 1px; width: 730px; margin: 0 auto; }
+#block-commerce-checkout-progress-indication li { background-color: #2E2115; position: relative; margin: 0 8px; list-style-type: none; text-align: center; padding: 0 10px; }
 #block-commerce-checkout-progress-indication li:before { content: ""; position: absolute; left: -13px; bottom: 0px; width: 0; height: 0; border-left: 13px solid transparent; border-top: 12px solid #2E2115; border-bottom: 12px solid #2E2115; }
 #block-commerce-checkout-progress-indication li:after { content: ""; position: absolute; right: -13px; width: 0; height: 0; border-left: 13px solid #2E2115; border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+#block-commerce-checkout-progress-indication li.cart.visited.first { border: none; margin-left: 3px; }
+#block-commerce-checkout-progress-indication li.cart.visited.first:before { border: none; }
+#block-commerce-checkout-progress-indication li.complete.last:after { border: none; }
+#block-commerce-checkout-progress-indication li.complete.last { border: none; margin-right: 1px; }
+.commerce-checkout-progress li.active { font-weight: normal; }
+ol.inline.commerce-checkout-progress li { width: inherit; }
 li.cart.visited.first { width: 60px; }
-li.cart.visited.first:before { border: none; }
-li.roots_reg_children_info.visited { max-width: 130px; }
-li.roots_reg_sign_up.visited { max-width: 100px; }
-li.checkout.visited { max-width: 77px; }
-li.review.visited { max-width: 99px; }
-li.active.complete.last { width: 160px; }
+li.roots_reg_children_info, li.active.roots_reg_children_info, li.roots_reg_children_info.visited { max-width: 141px; }
+li.roots_reg_sign_up, li.roots_reg_sign_up.visited { max-width: 109px; }
+li.checkout, li.checkout.visited { max-width: 83px; }
+li.review, li.review.visited { max-width: 109px; }
+li.complete.last, li.active.complete.last { width: /*160*/147px; }
+#block-commerce-checkout-progress-indication li.active { color: rgb(195, 195, 176); }
