@@ -104,6 +104,13 @@ input[type="submit"], button, a.button {
 div.error, .error { color: #cc0000; }
 .form-item input.error, .form-item textarea.error, .form-item select.error { border: 1px solid #cc0000; }
 
+input[type="submit"], button, a.button {
+  background: rgb(102, 102, 50);
+  color: white;
+  text-shadow: none;
+  border: none;
+  border-radius: 0;
+}
 
 /**
  * 3. Header
@@ -216,7 +223,7 @@ a#logo { width: 123px; }
 	#navigation li ul.main-menu li a, #navigation li ul.main-menu li.first a { padding: 5px 0.5em; }
 
 	/* om-maximenu */
-  #om-maximenu-megamenu { width: 582px; margin: 0 auto; }
+  #om-maximenu-main-menu { width: 582px; margin: 0 auto; }
   .om-maximenu ul.om-menu { height: 40px; line-height: 40px; }
 	.om-maximenu ul.om-menu li.om-leaf .om-link { padding: 0 1em; }
 	.om-maximenu ul.om-menu li.om-leaf.first .om-link { padding-left: 1em; }
@@ -309,3 +316,71 @@ li.checkout, li.checkout.visited { max-width: 83px; }
 li.review, li.review.visited { max-width: 109px; }
 li.complete.last, li.active.complete.last { width: /*160*/147px; }
 #block-commerce-checkout-progress-indication li.active { color: rgb(195, 195, 176); }
+
+
+/**
+ * PROGRAM PAGES
+ */
+
+.node-program .group-header {
+  background-color: rgba(250, 250, 250, 1);
+  padding: 5px;
+  margin-bottom: 15px;
+  /*border: solid 1px rgba(102, 102, 50, 0.41);*/
+  font-size: .9em;
+}
+.group-header .field-label {
+  color: rgb(102, 102, 50);
+}
+.node-program .group-header p { margin: 0; }
+.node-program .group-header .field {
+  margin: 0;
+}
+.node-program .taxonomy-term-description { margin: 0; }
+
+.ds-2col-stacked > .group-left{ width: 60%; }
+.field-name-field-event-image { display: none; }
+
+.ds-2col-stacked > .group-right { width: 36%; font-size: .9em; }
+.group-right .field { margin: 0; }
+.group-right .field .field-label, .group-right label {
+  font-weight: normal;
+  color: rgb(108, 108, 108);
+}
+.field.field-name-commerce-price.field-type-commerce-price.field-label-inline.clearfix {
+  width: 45%;
+  float: left;
+  padding: 5px;
+}
+.commerce-product-field-commerce-recurring-ini-price { border: solid 1px; border-bottom: none; padding-top: 5px; }
+.field.field-name-field-register {
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-bottom: solid 1px;
+  padding: 0 5px 5px;
+}
+.commerce-product-field-commerce-recurring-ini-price, .field.field-name-field-register { border-color: rgba(102, 102, 50, 0.68); }
+.group-right input[type="submit"] { position: relative; left: 150px; }
+.group-right .form-item { margin: 0 0 10px; }
+.group-right select { background: whitesmoke; }
+.field-name-registration-option p { margin: 10px 0 0; }
+@media screen and (max-width: 767px) {
+.ds-2col-stacked > .group-left, .ds-2col-stacked > .group-right { width: 100%; }
+}
+@media screen and (min-width: 768px) {
+.node-program .group-header, .node-long-term-program .group-header { width: 36%; margin: 0; position: absolute; right: 10px; height: 155px; }
+.node-type-program .ds-2col-stacked > .group-right, .node-type-long-term-program .ds-2col-stacked > .group-right  { margin-top: 165px; }
+.field-name-field-event-image {
+  width: 220px;
+  float: left;
+  margin: 0 20px 10px 0;
+  display: block;
+}
+}
+
+/**
+ * BLOG
+ */
+.view-blog { margin-top: 15px; }
+section#block-views-blog-block-2 { margin-top: 14px; }
+
