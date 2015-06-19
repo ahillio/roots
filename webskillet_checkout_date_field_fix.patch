@@ -1,0 +1,168 @@
+diff --git a/modules/roots_reg/roots_reg.module b/modules/roots_reg/roots_reg.module
+index 27c791a..f38cdca 100644
+--- a/modules/roots_reg/roots_reg.module
++++ b/modules/roots_reg/roots_reg.module
+@@ -62,13 +62,17 @@ function roots_reg_commerce_checkout_pane_info() {
+ 
+   $checkout_panes['roots_reg_personal_pane'] = array(
+     'title' => t('Personal Info'),
+-    'file' => 'roots_reg_panes.inc',
++    'base' => 'roots_reg_personal_pan',
+     'page' => 'roots_reg_personal_info',
++    'weight' => '-10',
++    'fieldset' => TRUE,
+   );
+-  $checkout_panes['roots_reg_children_info_pane'] = array(
+-    'title' => t('Child Information'),
+-    'file' => 'roots_reg_panes.inc',
++  $checkout_panes['roots_reg_children_pane'] = array(
++    'title' => t('Child Info'),
++    'base' => 'roots_reg_personal_pan2',
+     'page' => 'roots_reg_children_info',
++    'weight' => '-10',
++    'fieldset' => TRUE,
+   );
+   $checkout_panes['roots_reg_signup_info_pane'] = array(
+     'title' => t('Registrations'),
+@@ -81,6 +85,141 @@ function roots_reg_commerce_checkout_pane_info() {
+ }
+ 
+ /**
++ * Checkout pane callback: presents pane which content is set via rules.
++ */
++function roots_reg_personal_pan_checkout_form($form, &$form_state, $checkout_pane, $order) {
++  global $user;
++  $redhen_contact = redhen_contact_load_by_user($user);
++  if (!$redhen_contact) {
++    $redhen_contact = redhen_contact_create(array('type' => 'adult'));
++    $redhen_contact->setEmail($user->mail);
++    $redhen_contact->save();
++  }
++  $pane_form['redhen_contact'] = array(
++    '#type' => 'value',
++    '#value' => $redhen_contact,
++  );
++  // Add the field widgets for the profile.
++  module_load_include('inc', 'redhen_contact', 'includes/redhen_contact.forms');
++  // Add the field widgets for the profile.
++  $pane_form = redhen_contact_contact_form($pane_form, $form_state, $redhen_contact);
++
++  unset($pane_form['actions']);
++  return $pane_form;
++}
++
++
++/**
++ * Validate callback for roots_reg_personal_pane
++ *
++ * @see roots_reg_commerce_checkout_pane_info().
++ */
++function roots_reg_personal_pan_checkout_form_validate($form, &$form_state, $checkout_pane, $order) {
++  return _roots_contact_form_validate($form, $form_state);
++}
++
++/**
++ * Submit for roots_reg_personal_pane
++ *
++ * @see roots_reg_commerce_checkout_pane_info().
++ */
++function roots_reg_personal_pan_checkout_form_submit($form, &$form_state, $checkout_pane, $order) {
++  _roots_reg_contact_form_submit($form, $form_state);
++}
++
++/**
++ * Checkout pane callback: presents pane which content is set via rules.
++ */
++function roots_reg_personal_pan2_checkout_form($form, &$form_state, $checkout_pane, $order) {
++  global $user;
++
++  $redhen_contact = redhen_contact_load_by_user($user);
++  if (!$redhen_contact) {
++    _roots_reg_no_contact_error($user);
++  }
++  $contact_id = _root_reg_get_qs_contact_id();
++  $query_param = drupal_get_query_parameters();
++  if ($contact_id) {
++    // Show contact edit.
++    $child_contact = redhen_contact_load($contact_id);
++    // Call custom access callback function to determine if this contact is editable.
++    if (redhen_permissioned_relations_access('update', $child_contact)) {
++
++      $form['redhen_contact'] = array(
++        '#type' => 'value',
++        '#value' => $child_contact,
++      );
++      module_load_include('inc', 'redhen_contact', 'includes/redhen_contact.forms');
++      // Add the field widgets for the profile.
++      $form = redhen_contact_contact_form( $form, $form_state, $child_contact);
++
++      $form['order'] = array(
++        '#type' => 'value',
++        '#value' => $order,
++      );
++      $form['actions']['submit']['#submit'] = array(
++        '_roots_reg_children_info_pane_contact_submit',
++      );
++      $form['actions']['submit']['#validate'] = array(
++        '_roots_contact_form_validate',
++      );
++
++    }
++  }
++  elseif (!empty($query_param['child_contact_add'])) {
++    // Show contact add form.
++    $child_contact = redhen_contact_create(array('type' => 'kid'));
++
++
++    $form['redhen_contact'] = array(
++      '#type' => 'value',
++      '#value' => $child_contact,
++    );
++    module_load_include('inc', 'redhen_contact', 'includes/redhen_contact.forms');
++    // Add the field widgets for the profile.
++    $form = redhen_contact_contact_form( $form, $form_state, $child_contact);
++
++
++    // Get actual relationship field from Redhen Relation entity so that changes automatically update.
++    $field_instance = field_info_instance('relation', 'field_parentchild_relationship', 'child_minor');
++    $field = field_info_field('field_parentchild_relationship');
++    $form['relationship'] = array(
++      '#type' => 'select',
++      '#title' => $field_instance['label'],
++      '#options' => $field['settings']['allowed_values'],
++      '#weight' => -100,
++    );
++    $form['order'] = array(
++      '#type' => 'value',
++      '#value' => $order,
++    );
++    $form['actions']['submit']['#submit'] = array(
++      '_roots_reg_children_info_pane_contact_submit',
++      '_roots_reg_children_info_pane_add_relationship',
++    );
++    $form['actions']['submit']['#validate'] = array(
++      '_roots_contact_form_validate',
++    );
++  }
++  else {
++    // Show list of child contact by Views.
++    $view_output = views_embed_view('parents_child_relation', 'default', $order->order_id);
++    $form['markup'] = array(
++      '#type' => 'markup',
++      '#markup' => $view_output,
++    );
++
++    $form['add_link'] = array(
++      '#type' => 'link',
++      '#title' => t('Add new child contact'),
++      '#href' => 'checkout/' . $order->order_id . '/roots_reg_children_info' ,
++      '#options' => array('query' => array('child_contact_add' => TRUE)),
++    );
++  }
++  return $form;
++}
++
++/**
+  * Implements hook_form_FORM_ID_alter().
+  */
+ function roots_reg_form_commerce_checkout_form_roots_reg_children_info_alter(&$form, &$form_state, $form_id) {
